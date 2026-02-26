@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using Working_with_Data.Data;
+using Working_with_Data.Models;
 
 namespace Working_with_Data.Controllers
 {
@@ -30,7 +31,28 @@ namespace Working_with_Data.Controllers
             var DATA = dbContext.Gadgets.ToList();
             return View(DATA);
         }
- 
 
+        
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Create(Gadget gt)
+        {
+            if (ModelState.IsValid)
+            {
+                dbContext.Gadgets.Add(gt);
+                dbContext.SaveChanges();
+                return RedirectToAction("Index", "Gadget");
+            }
+            return View(gt);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var data = await dbContext.Gadgets.FirstOrDefaultAsync(x => x.Id == id);
+            return View(data);
+        }
     }
 }
